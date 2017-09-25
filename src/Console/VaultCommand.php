@@ -7,28 +7,33 @@ namespace Vyuldashev\LaravelVault\Console;
 use Illuminate\Console\Command;
 use Vyuldashev\LaravelVault\Vault;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Console\ConfirmableTrait;
 use Vyuldashev\LaravelVault\Contracts\Store;
 use Vyuldashev\LaravelVault\Stores\Memcached;
 
 class VaultCommand extends Command
 {
+    use ConfirmableTrait;
+
     protected $signature = 'vault
                             {host=127.0.0.1}
-                            {port=11211}';
+                            {port=11211}
+                            {--force : Force the operation to run when in production.}';
     protected $description = 'Create a secure cached configuration file';
 
     public function handle(Vault $vault, Filesystem $filesystem): void
     {
-        $store = $this->createStore();
-
         $cachedConfigPath = $this->laravel->getCachedConfigPath();
 
-        if ($filesystem->exists($cachedConfigPath) && !$this->confirm('This command will override your cached configuration. Are you sure?')) {
-            exit(0);
+        if (
+            $filesystem->exists($cachedConfigPath) &&
+            !$this->confirmToProceed('This command will override your cached configuration. Are you sure?')
+        ) {
+            return;
         }
 
         $vault->secure(
-            $store,
+            $this->createStore(),
             $cachedConfigPath,
             [
                 $this->laravel->basePath().'/.env',
