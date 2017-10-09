@@ -66,6 +66,21 @@ class Memcached implements Store
     }
 
     /**
+     * Clear all items saved in the store.
+     *
+     * @param string $prefix
+     * @param string|null $except
+     */
+    public function clear(string $prefix, string $except = null): void
+    {
+        foreach ($this->connection->getAllKeys() as $key) {
+            if ($key !== $except && starts_with($key, $prefix)) {
+                $this->connection->delete($key);
+            }
+        }
+    }
+
+    /**
      * Get the instance as an array.
      *
      * @return array

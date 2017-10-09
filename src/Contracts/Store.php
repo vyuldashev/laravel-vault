@@ -35,4 +35,12 @@ interface Store extends Arrayable
      * @return mixed
      */
     public function get(string $key);
+
+    /**
+     * Clear all items saved in the store.
+     *
+     * @param string $prefix
+     * @param string|null $except
+     */
+    public function clear(string $prefix, string $except = null): void;
 }

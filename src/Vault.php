@@ -10,6 +10,7 @@ use Vyuldashev\LaravelVault\Contracts\Store;
 
 class Vault
 {
+    private const PREFIX = 'vault';
     private $filesystem;
 
     public function __construct(Filesystem $filesystem)
@@ -32,6 +33,8 @@ class Vault
         collect($cleanup)->each(function ($item) {
             $this->filesystem->delete($item);
         });
+
+        $store->clear(self::PREFIX, $key);
     }
 
     /**
@@ -41,6 +44,6 @@ class Vault
      */
     private function generateKey(): string
     {
-        return str_random();
+        return self::PREFIX.'_'.str_random();
     }
 }
