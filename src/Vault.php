@@ -6,15 +6,19 @@ namespace Vyuldashev\LaravelVault;
 
 use RuntimeException;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Contracts\Config\Repository;
 use Vyuldashev\LaravelVault\Contracts\Store;
 
 class Vault
 {
     private const PREFIX = 'vault';
+
+    private $config;
     private $filesystem;
 
-    public function __construct(Filesystem $filesystem)
+    public function __construct(Repository $config, Filesystem $filesystem)
     {
+        $this->config = $config;
         $this->filesystem = $filesystem;
     }
 
@@ -33,8 +37,6 @@ class Vault
         collect($cleanup)->each(function ($item) {
             $this->filesystem->delete($item);
         });
-
-        $store->clear(self::PREFIX, $key);
     }
 
     /**
@@ -44,6 +46,9 @@ class Vault
      */
     private function generateKey(): string
     {
-        return self::PREFIX.'_'.str_random();
+        $appName = $this->config->get('app.name');
+        $appName = md5($appName);
+
+        return implode('_', [self::PREFIX, $appName]);
     }
 }
