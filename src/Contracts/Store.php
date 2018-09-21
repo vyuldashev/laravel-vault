@@ -15,7 +15,7 @@ interface Store extends Arrayable
      *
      * @return Store
      */
-    public function create(array $options): Store;
+    public function create(array $options): self;
 
     /**
      * Put item in store.

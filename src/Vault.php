@@ -43,11 +43,11 @@ class Vault
      */
     private function generateKey(): string
     {
-        return $this->getPrefix() . '_' . str_random();
+        return $this->getPrefix().'_'.str_random();
     }
 
     private function getPrefix(): string
     {
-        return 'vault_' . config('app.name');
+        return 'vault_'.str_slug(config('app.name'), '_');
     }
 }
