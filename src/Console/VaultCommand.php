@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Vyuldashev\LaravelVault\Console;
 
 use Illuminate\Console\Command;
+use InvalidArgumentException;
+use Vyuldashev\LaravelVault\Stores\APCu;
 use Vyuldashev\LaravelVault\Vault;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Console\ConfirmableTrait;
@@ -16,6 +18,7 @@ class VaultCommand extends Command
     use ConfirmableTrait;
 
     protected $signature = 'vault
+                            {store=memcached}
                             {host=127.0.0.1}
                             {port=11211}
                             {--force : Force the operation to run when in production.}';
@@ -36,7 +39,7 @@ class VaultCommand extends Command
             $this->createStore(),
             $cachedConfigPath,
             [
-                $this->laravel->basePath().'/.env',
+                $this->laravel->basePath() . '/.env',
             ]
         );
 
@@ -51,6 +54,17 @@ class VaultCommand extends Command
      */
     private function createStore(): Store
     {
-        return (new Memcached)->create($this->arguments());
+        switch ($this->argument('store')) {
+            case 'memcached':
+                $store = new Memcached();
+                break;
+            case 'apcu':
+                $store = new APCu();
+                break;
+            default:
+                throw new InvalidArgumentException('Unknown store.');
+        }
+
+        return $store->create($this->arguments());
     }
 }
