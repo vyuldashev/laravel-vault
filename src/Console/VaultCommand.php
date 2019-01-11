@@ -58,9 +58,6 @@ class VaultCommand extends Command
             case 'memcached':
                 $store = new Memcached();
                 break;
-            case 'apcu':
-                $store = new APCu();
-                break;
             default:
                 throw new InvalidArgumentException('Unknown store.');
         }
