@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Vyuldashev\LaravelVault\Stores;
 
+use Illuminate\Support\Str;
 use Memcached as Connection;
 use Vyuldashev\LaravelVault\Contracts\Store;
 
@@ -74,7 +75,7 @@ class Memcached implements Store
     public function clear(string $prefix, string $except = null): void
     {
         foreach ($this->connection->getAllKeys() as $key) {
-            if ($key !== $except && starts_with($key, $prefix)) {
+            if ($key !== $except && Str::startsWith($key, $prefix)) {
                 $this->connection->delete($key);
             }
         }

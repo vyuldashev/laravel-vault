@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Vyuldashev\LaravelVault;
 
+use Illuminate\Support\Str;
 use RuntimeException;
 use Illuminate\Filesystem\Filesystem;
 use Vyuldashev\LaravelVault\Contracts\Store;
@@ -48,6 +49,6 @@ class Vault
 
     private function getPrefix(): string
     {
-        return 'vault_'.str_slug(config('app.name'), '_');
+        return 'vault_'.Str::slug(config('app.name'), '_');
     }
 }

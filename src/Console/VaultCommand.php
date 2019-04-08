@@ -6,7 +6,6 @@ namespace Vyuldashev\LaravelVault\Console;
 
 use Illuminate\Console\Command;
 use InvalidArgumentException;
-use Vyuldashev\LaravelVault\Stores\APCu;
 use Vyuldashev\LaravelVault\Vault;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Console\ConfirmableTrait;
